@@ -1,0 +1,24 @@
+1. Nâng cấp phiên bản Java (Giải quyết lỗi tương thích)
+Vấn đề: Tệp pom.xml cũ đang sử dụng Java 8 (1.8). Tuy nhiên, các phiên bản thư viện mới như Hibernate Core 6.2+ và Logback 1.4+ đều yêu cầu biên dịch trên nền tảng Java mới hơn (tối thiểu là Java 11). Nếu giữ nguyên Java 8, quá trình build sẽ thất bại hoặc văng lỗi UnsupportedClassVersionError khi chạy.
+
+Giải pháp: Thay đổi thẻ <maven.compiler.source> và <maven.compiler.target> từ 1.8 lên 17. Java 17 là phiên bản LTS (Long-Term Support) rất ổn định và hoàn toàn tương thích với các thư viện hiện đại này.
+
+2. Sử dụng thẻ <exclusions> (Giải quyết xung đột thư viện bắc cầu)
+Vấn đề: Khi bạn kéo một thư viện lớn (như Hibernate) về, Maven sẽ tự động kéo theo các thư viện phụ mà Hibernate cần để hoạt động (gọi là Transitive Dependencies). Rất có thể Hibernate sẽ kéo theo JUnit 4 ngầm bên trong. Điều này vi phạm yêu cầu của đề bài là: "sử dụng JUnit Jupiter 5 làm công cụ kiểm thử duy nhất".
+
+Giải pháp: Sử dụng thẻ <exclusions> bên trong cấu hình của hibernate-core để chủ động chặn Maven tải về thư viện junit (bản 4).  Giải pháp này giúp dự án hoàn toàn "sạch bóng" JUnit 4 và chỉ chạy duy nhất trên nền tảng JUnit 5.
+
+3. Cập nhật Maven Surefire Plugin (Đảm bảo JUnit 5 hoạt động)
+Vấn đề: Maven sử dụng một plugin có tên là maven-surefire-plugin để kích hoạt các bài test trong quá trình build (giai đoạn mvn test). Các phiên bản Surefire quá cũ chỉ nhận diện được JUnit 4. Dù bạn có khai báo thư viện JUnit 5, nếu không có Surefire phù hợp, Maven sẽ bỏ qua toàn bộ các bài test của bạn và báo "Tests run: 0".
+
+Giải pháp: Thêm và cập nhật maven-surefire-plugin lên phiên bản 3.2.2. Từ phiên bản 2.22.0 trở lên (và đặc biệt là nhánh 3.x), Surefire đã hỗ trợ mặc định (native support) cho JUnit Platform, giúp nó tự động tìm và chạy các bài test viết bằng JUnit 5.
+
+4. Sửa tọa độ (Coordinates) của thư viện MySQL
+Vấn đề: Khai báo <groupId>mysql</groupId> và <artifactId>mysql-connector-java</artifactId> là cấu hình của các phiên bản MySQL 5.x cũ. Đối với phiên bản 8.x trở lên, nhà phát hành Oracle đã thay đổi hoàn toàn "địa chỉ" của thư viện này trên kho Maven Central.
+
+Giải pháp: Đổi groupId thành com.mysql và artifactId thành mysql-connector-j. Việc này đảm bảo Maven tìm đúng kho lưu trữ hiện tại của MySQL để tải driver kết nối cơ sở dữ liệu về.
+
+5. Xóa bỏ các khai báo trùng lặp (Deduplication)
+Vấn đề: Trong tệp bị lỗi, thư viện hibernate-core bị khai báo lặp lại hai lần. Điều này khiến Maven phải xử lý cấu hình dư thừa, dễ gây ra cảnh báo (warnings) trong quá trình build và làm rối tệp tin.
+
+Giải pháp: Xóa bỏ khối khai báo hibernate-core không có <exclusions>, chỉ giữ lại một cấu hình chuẩn duy nhất và đầy đủ nhất. Nguyên tắc của Maven là mỗi thư viện (cùng groupId và artifactId) chỉ nên xuất hiện một lần trong thẻ <dependencies>.
