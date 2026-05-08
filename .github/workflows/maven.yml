@@ -1,4 +1,4 @@
-name: Java CI with Maven (Bai9.3)
+name: Java CI with Maven Matrix Strategy
 
 on:
   push:
@@ -8,7 +8,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    
+    runs-on: ${{ matrix.os }}
 
     steps:
     - name: Checkout code
@@ -21,11 +25,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Build and Test with Maven
-      run: mvn -B package --file Bai9.3/pom.xml
+    - name: Build and Test Bai9.4 with Maven
+      run: mvn -B package --file Bai9.4/pom.xml
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
+      if: matrix.os == 'ubuntu-latest' # Only upload from one OS to save space
       with:
-        name: bank-system-jar
-        path: Bai9.3/target/*.jar
+        name: bank-system-matrix-jar
+        path: Bai9.4/target/*.jar
