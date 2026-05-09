@@ -1,0 +1,36 @@
+name: Bai 9.6 - Maven Caching Test
+
+on:
+  push:
+    paths:
+      - 'Bai9.6/**'
+      - '.github/workflows/bai9.6-caching.yml'
+  pull_request:
+    paths:
+      - 'Bai9.6/**'
+
+jobs:
+  build-and-cache:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        # Đây là cấu hình caching quan trọng cho Maven
+        cache: 'maven'
+
+    - name: Build and Test Bai9.6
+      run: mvn -B clean verify --file Bai9.6/pom.xml
+
+    - name: Upload JaCoCo Report (Optional)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: jacoco-report-bai9.6
+        path: Bai9.6/target/site/jacoco/
