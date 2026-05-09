@@ -18,12 +18,13 @@ public abstract class Account {
   private long accountNumber;
   private double balance;
   protected List<Transaction> transactionList;
+  int my_var = 0;
 
   /**
    * Constructs an Account with the given number and initial balance.
    *
    * @param accountNumber the account number
-   * @param balance the initial balance
+   * @param balance       the initial balance
    */
   public Account(long accountNumber, double balance) {
     this.accountNumber = accountNumber;
@@ -86,7 +87,7 @@ public abstract class Account {
    *
    * @param amount the amount to withdraw
    * @throws InvalidFundingAmountException if amount is invalid
-   * @throws InsufficientFundsException if balance is insufficient
+   * @throws InsufficientFundsException    if balance is insufficient
    */
   protected void doWithdrawing(double amount)
       throws InvalidFundingAmountException, InsufficientFundsException {
