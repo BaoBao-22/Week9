@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 public class CheckingAccount extends Account {
 
   private static final Logger logger = LoggerFactory.getLogger(CheckingAccount.class);
+  int my_var = 0;
 
   public CheckingAccount(long accountNumber, double balance) {
     super(accountNumber, balance);
@@ -25,8 +26,7 @@ public class CheckingAccount extends Account {
           Transaction.TYPE_DEPOSIT_CHECKING,
           amount,
           initialBalance,
-          finalBalance
-      );
+          finalBalance);
       addTransaction(t);
       logger.info("Deposit of ${} successful for account {}", amount, getAccountNumber());
     } catch (InvalidFundingAmountException e) {
@@ -45,8 +45,7 @@ public class CheckingAccount extends Account {
           Transaction.TYPE_WITHDRAW_CHECKING,
           amount,
           initialBalance,
-          finalBalance
-      );
+          finalBalance);
       addTransaction(t);
       logger.info("Withdrawal of ${} successful for account {}. New balance: ${}",
           amount, getAccountNumber(), finalBalance);
