@@ -1,0 +1,37 @@
+name: Bai 9.7 - Automated PR Review
+
+on:
+  pull_request:
+    branches: [ "main", "master" ]
+    paths:
+      - 'Bai9.7/**'
+      - '.github/workflows/bai9.7-pr-review.yml'
+
+jobs:
+  checkstyle-review:
+    name: Checkstyle Review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Run Checkstyle
+      run: mvn checkstyle:checkstyle -f Bai9.7/pom.xml
+
+    - name: Post Checkstyle comments
+      uses: dbelyaev/action-checkstyle@v1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        checkstyle_xml: Bai9.7/target/checkstyle-result.xml
+        level: warning
