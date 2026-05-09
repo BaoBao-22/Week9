@@ -25,12 +25,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Build and Test Bai9.4 with Maven
-      run: mvn -B package --file Bai9.4/pom.xml
+    - name: Build and Test Bai9.5 with JaCoCo
+      run: mvn -B clean verify --file Bai9.5/pom.xml
 
-    - name: Upload Build Artifact
+    - name: Upload JaCoCo Coverage Report
       uses: actions/upload-artifact@v3
-      if: matrix.os == 'ubuntu-latest' # Only upload from one OS to save space
+      if: always()
       with:
-        name: bank-system-matrix-jar
-        path: Bai9.4/target/*.jar
+        name: jacoco-report-${{ matrix.os }}
+        path: Bai9.5/target/site/jacoco/
