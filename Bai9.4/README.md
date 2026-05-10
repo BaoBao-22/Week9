@@ -42,6 +42,3 @@ Nếu viết mã nguồn chỉ với `\`, bài test sẽ thất bại khi chạy
 
 Sau khi refactor, mã nguồn đã vượt qua tất cả các bài kiểm tra trên cả 3 hệ điều hành trong GitHub CI Matrix.
 
----
-**Người thực hiện:** Antigravity AI
-**Ngày:** 09/05/2026

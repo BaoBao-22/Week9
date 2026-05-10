@@ -39,6 +39,3 @@ Sau khi chạy lệnh `mvn verify` tại máy cục bộ hoặc trên GitHub Act
 - Báo cáo HTML sẽ được tạo tại: `target/site/jacoco/index.html`
 - Bạn có thể mở file này bằng trình duyệt để xem chi tiết từng lớp và phương thức được bao phủ bao nhiêu phần trăm.
 
----
-**Người thực hiện:** Đạt
-**Ngày:** 09/05/2026
